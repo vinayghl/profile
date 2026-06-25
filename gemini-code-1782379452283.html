@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vinay R - Futuristic Interactive 3D Portfolio. Web Developer, Game Developer & Creator.">
+    <title>Vinay R. // Premium Code Studio</title>
+    
+    <!-- SEO / Open Graph -->
+    <meta property="og:title" content="Vinay R. | Dev & Creator Workspace">
+    <meta property="og:description" content="A premium interactive workspace turning creative concepts into reality from Shivamogga, Karnataka, India.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#030307">
+
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Syne:wght@500;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons & Animation Foundations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <style>
+        :root {
+            --bg-base: #020206;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --secondary: #ff2a85;
+            --secondary-glow: rgba(255, 42, 133, 0.25);
+            --cyan: #00f2fe;
+            --glass: rgba(6, 6, 16, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-display: 'Syne', sans-serif;
+            --font-futuristic: 'Orbitron', sans-serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Deactivate default cursor for custom terminal cursor */
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* 3rd Dimension Canvas Background container */
+        #three-space-container {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: radial-gradient(circle at center, #0b0826 0%, #020206 100%);
+        }
+
+        /* Code Themed Custom Pointer */
+        .custom-cursor {
+            position: fixed;
+            z-index: 10000;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            font-family: 'Courier New', monospace;
+            font-weight: 900;
+            font-size: 15px;
+            color: var(--cyan);
+            text-shadow: 0 0 8px var(--cyan), 0 0 15px var(--primary);
+            white-space: nowrap;
+            letter-spacing: -1px;
+            transition: transform 0.04s linear;
+        }
+        .custom-cursor-ring {
+            position: fixed;
+            width: 44px;
+            height: 44px;
+            border: 1.5px dashed rgba(0, 242, 254, 0.35);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, border-color 0.2s, transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--cyan), var(--secondary));
+            z-index: 10001; width: 0%;
+            box-shadow: 0 2px 12px var(--cyan);
+        }
+
+        /* Typography Styles */
+        h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; }
+        .font-cyber-override { font-family: var(--font-futuristic); letter-spacing: 2px; }
+        
+        .text-neon-gradient {
+            background: linear-gradient(135deg, #fff 20%, var(--text-muted) 50%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-header {
+            text-align: center; margin-bottom: 5rem; position: relative;
+        }
+        .section-header h2 {
+            font-size: 3.5rem; text-transform: uppercase; font-weight: 900;
+            background: linear-gradient(90deg, #fff, var(--cyan), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-header p {
+            color: var(--text-muted); font-size: 1.1rem; margin-top: 10px; font-family: var(--font-futuristic);
+        }
+
+        /* Floating Premium Navigation */
+        nav {
+            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+            z-index: 999; background: var(--glass);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border); padding: 8px 32px;
+            border-radius: 100px; display: flex; gap: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        nav a {
+            color: var(--text-muted); text-decoration: none; font-weight: 600;
+            font-size: 0.85rem; font-family: var(--font-futuristic); text-transform: uppercase;
+            padding: 8px 16px; transition: all 0.3s; border-radius: 50px; position: relative;
+        }
+        nav a:hover, nav a.active {
+            color: #fff; text-shadow: 0 0 8px var(--primary);
+        }
+
+        /* Layout Grid Blocks */
+        .container { max-width: 1300px; margin: 0 auto; padding: 120px 24px; }
+        .split-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; }
+        
+        /* 3D Dynamic Structural Cards */
+        .tilt-card-wrapper {
+            perspective: 1000px;
+        }
+        .tilt-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 2.5rem;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .tilt-card:hover {
+            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.15), 0 0 40px rgba(0, 242, 254, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .preserve-3d { transform: translateZ(50px); }
+
+        /* Navigation Buttons & Action Triggers */
+        .action-btn {
+            display: inline-flex; align-items: center; gap: 12px;
+            padding: 16px 36px; border-radius: 14px; font-weight: 700;
+            font-family: var(--font-futuristic); text-decoration: none;
+            text-transform: uppercase; font-size: 0.85rem; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none; position: relative; overflow: hidden;
+        }
+        .btn-glow-primary {
+            background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff;
+            box-shadow: 0 10px 25px var(--primary-glow);
+        }
+        .btn-glow-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.6);
+        }
+        .btn-cyber-outline {
+            background: rgba(255,255,255,0.02); color: #fff;
+            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+        }
+        .btn-cyber-outline:hover {
+            border-color: var(--cyan); background: rgba(0, 242, 254, 0.05);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2); transform: translateY(-3px);
+        }
+
+        /* Hero Layout Setup */
+        #home {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            position: relative; padding-top: 100px;
+        }
+        .hero-inner { text-align: center; max-width: 900px; z-index: 2; }
+        
+        .avatar-3d-frame {
+            width: 190px; height: 190px; margin: 0 auto 35px;
+            position: relative; transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .avatar-glow-ring {
+            position: absolute; inset: -4px;
+            background: linear-gradient(135deg, var(--primary), var(--cyan), var(--secondary));
+            border-radius: 50%; animation: spinRing 6s linear infinite;
+        }
+        @keyframes spinRing { 100% { transform: rotate(360deg); } }
+        
+        .avatar-img {
+            width: 100%; height: 100%; border-radius: 50%;
+            object-fit: cover; border: 6px solid #020206; position: relative; z-index: 2;
+        }
+
+        .hero-title-main {
+            font-size: 5rem; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 900;
+        }
+        .typed-profession { color: var(--cyan); text-shadow: 0 0 15px rgba(0,242,254,0.4); }
+
+        /* Technical Skill Pills */
+        .exploration-pill-container {
+            display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;
+        }
+        .exp-pill {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 8px 18px; border-radius: 100px; font-size: 0.85rem;
+            font-family: var(--font-futuristic); color: var(--text-main);
+            transition: all 0.3s;
+        }
+        .exp-pill:hover {
+            border-color: var(--secondary); background: rgba(255, 42, 133, 0.08);
+            box-shadow: 0 0 15px rgba(255, 42, 133, 0.2);
+        }
+
+        /* Functional Projects Display Architectures */
+        .showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 35px; }
+        
+        .card-visual-node {
+            height: 220px; background: rgba(0,0,0,0.4);
+            border-radius: 18px; margin-bottom: 20px; overflow: hidden;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--glass-border);
+        }
+        .card-visual-img {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0.25; transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 1;
+        }
+        .tilt-card:hover .card-visual-img {
+            opacity: 0.55; transform: scale(1.06) translateZ(10px);
+        }
+        .card-visual-node i {
+            font-size: 3.5rem; color: rgba(255,255,255,0.6); transition: all 0.4s;
+            z-index: 2; position: relative;
+        }
+        .tilt-card:hover .card-visual-node i {
+            color: var(--cyan); transform: scale(1.12) translateZ(35px);
+            filter: drop-shadow(0 0 15px var(--cyan));
+        }
+
+        /* App Block Styling Container */
+        .app-store-strip {
+            display: flex; align-items: center; gap: 30px;
+        }
+        .app-vector-icon {
+            width: 90px; height: 90px; border-radius: 22px;
+            background: linear-gradient(135deg, #121224, #06060f);
+            border: 1px solid rgba(255,255,255,0.09);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: #a855f7;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Social Connection Ecosystem Links */
+        .social-dock {
+            display: flex; flex-wrap: wrap; gap: 15px; margin-top: 30px;
+        }
+        .dock-link {
+            width: 55px; height: 55px; border-radius: 16px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main); font-size: 1.3rem; text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .dock-link:hover {
+            transform: translateY(-8px) scale(1.08);
+            border-color: #fff; color: #000; background: #fff;
+            box-shadow: 0 10px 25px rgba(255,255,255,0.3);
+        }
+
+        /* Workspace Preloader Framework */
+        #preloader {
+            position: fixed; inset: 0; background: #020205; z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            gap: 20px; transition: opacity 0.6s ease;
+        }
+        .cyber-spinner {
+            width: 65px; height: 65px; border: 3px solid rgba(99,102,241,0.1);
+            border-top-color: var(--cyan); border-bottom-color: var(--secondary);
+            border-radius: 50%; animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 992px) {
+            .split-grid { grid-template-columns: 1fr; }
+            .hero-title-main { font-size: 3.5rem; }
+            nav { width: 92%; padding: 6px 16px; gap: 8px; }
+            nav a { font-size: 0.75rem; padding: 6px 10px; }
+            .app-store-strip { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scroll Progress Infrastructure -->
+    <div class="scroll-progress" id="progress-bar"></div>
+    
+    <!-- Code Themed Cursor Nodes -->
+    <div class="custom-cursor" id="cursor-dot">&lt;/&gt;</div>
+    <div class="custom-cursor-ring" id="cursor-ring"></div>
+
+    <!-- Active Workspace Preloader -->
+    <div id="preloader">
+        <div class="cyber-spinner"></div>
+        <div class="font-cyber" style="font-family:'Orbitron',sans-serif; font-size: 0.8rem; letter-spacing: 4px; color: var(--text-muted);">INITIALIZING 3D GALACTIC MATRIX</div>
+    </div>
+
+    <!-- 3D Three.js Gateway Galaxy Engine Viewport -->
+    <div id="three-space-container"></div>
+
+    <!-- Global Float Menu -->
+    <nav id="global-nav">
+        <a href="#home" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#projects">Systems</a>
+        <a href="#apps">Apps</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <!-- Hero Block Matrix -->
+    <section id="home">
+        <div class="hero-inner" data-aos="zoom-out" data-aos-duration="1200">
+            <div class="avatar-3d-frame">
+                <div class="avatar-glow-ring"></div>
+                <img src="WhatsApp Image 2026-06-25 at 12.24.43 PM.jpeg" alt="Vinay R." class="avatar-img" onerror="this.src='https://ui-avatars.com/api/?name=Vinay+R&background=020206&color=fff&size=250'">
+            </div>
+            <h1 class="hero-title-main text-neon-gradient">Hi, I'm Vinay R.</h1>
+            <h2 style="font-family:'Orbitron',sans-serif; font-size: 1.4rem; font-weight: 600; color: #fff; margin-bottom: 2rem; letter-spacing:2px;">
+                CREATING <span class="typed-profession" id="profession-engine"></span>
+            </h2>
+            <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto 3rem; font-size: 1.05rem;">
+                A computational developer, creator, and strategic explorer based in Shivamogga, Karnataka, India. Architecting software logic, deployment suites, and real-time cosmic canvas graphics engines.
+            </p>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="#projects" class="action-btn btn-glow-primary"><i class="fa-solid fa-download"></i> View System Source Files</a>
+                <a href="#contact" class="action-btn btn-cyber-outline"><i class="fa-solid fa-terminal"></i> Establish Contact</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Core Section -->
+    <section id="about">
+        <div class="container">
+            <div class="split-grid">
+                <div class="tilt-card-wrapper" data-aos="fade-down-right" data-aos-duration="1000">
+                    <div class="tilt-card">
+                        <h3 style="font-family:'Orbitron',sans-serif; font-size: 1.7rem; color: var(--cyan); letter-spacing:2px;">// INTEL CORE</h3>
+                        <p style="margin-top: 20px; color: var(--text-muted);" class="preserve-3d">
+                            Currently pursuing a Bachelor of Computer Applications (BCA), engineering foundational expertise in data architectures, design paradigms, and computational logic modules. My core workflow spans modern deployment scripts, multi-paradigm database integration, and high-performance cross-platform applications.
+                        </p>
+                        <div style="font-style: italic; font-family: var(--font-display); font-size: 1.5rem; color: var(--secondary); margin: 30px 0; border-left: 3px solid var(--secondary); padding-left: 20px;" class="preserve-3d">
+                            "Kill them with your smile, bury them with your success."
+                        </div>
+                        <p style="color: var(--text-muted);" class="preserve-3d">
+                            Focusing entirely on continuous iteration, refining code efficiency, and implementing software structures optimized for real-world execution.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tilt-card-wrapper" data-aos="flip-left" data-aos-duration="1200">
+                    <div class="tilt-card">
+                        <h3 style="font-family:'Orbitron',sans-serif; font-size: 1.4rem; margin-bottom: 15px; letter-spacing:2px;">Operational Vector Matrix</h3>
+                        <div class="exploration-pill-container preserve-3d">
+                            <span class="exp-pill"><i class="fa-solid fa-code"></i> Web Architecture</span>
+                            <span class="exp-pill"><i class="fa-solid fa-cubes"></i> Three.js Spaces</span>
+                            <span class="exp-pill"><i class="fa-solid fa-laptop-code"></i> Java / C++ Logic</span>
+                            <span class="exp-pill"><i class="fa-solid fa-database"></i> Firebase / MySQL</span>
+                            <span class="exp-pill"><i class="fa-solid fa-gamepad"></i> Game Dev Iteration</span>
+                            <span class="exp-pill"><i class="fa-solid fa-mobile-button"></i> Mobile Environments</span>
+                        </div>
+
+                        <h3 style="font-family:'Orbitron',sans-serif; font-size: 1.2rem; margin-top: 40px; margin-bottom: 15px; letter-spacing:2px;">Active R&D Focus</h3>
+                        <div class="exploration-pill-container preserve-3d">
+                            <span class="exp-pill" style="border-color: var(--cyan);"><i class="fa-solid fa-microchip"></i> Artificial Intelligence Integration</span>
+                            <span class="exp-pill" style="border-color: var(--cyan);"><i class="fa-cloud"></i> Serverless Tech Deployment</span>
+                            <span class="exp-pill" style="border-color: var(--cyan);"><i class="fa-solid fa-gauge-high"></i> V8 Optimization Real-time Architecture</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Functional Projects Studio -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-header" data-aos="fade-down" data-aos-duration="1000">
+                <h2>Functional Projects Studio</h2>
+                <p>// Download and execute custom web suites and system tools directly</p>
+            </div>
+
+            <div class="showcase-grid">
+                
+                <!-- System Unit 1 -->
+                <div class="tilt-card-wrapper" data-aos="fade-up" data-aos-duration="800">
+                    <div class="tilt-card">
+                        <div class="card-visual-node">
+                            <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=600&q=80" alt="Lexicon Audio Studio" class="card-visual-img">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </div>
+                        <h3 style="font-family:'Orbitron',sans-serif; letter-spacing:1px;" class="preserve-3d">Lexicon Audio Suite</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;" class="preserve-3d">
+                            A browser-native multi-voice text-to-speech design workspace. Handles multi-variant synthesis engine tracking and active voice compilation modules.
+                        </p>
+                        <div style="display:flex; gap:8px; margin-bottom:20px;" class="preserve-3d">
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">SpeechAPI</span>
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">JavaScript</span>
+                        </div>
+                        <a href="deepseek_html_20260508_0da193.html" download="deepseek_html_20260508_0da193.html" class="action-btn btn-glow-primary preserve-3d" style="padding:12px 20px; width:100%; justify-content:center;">
+                            <i class="fa-solid fa-download"></i> Download HTML Source
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Unit 2 -->
+                <div class="tilt-card-wrapper" data-aos="zoom-in" data-aos-duration="900">
+                    <div class="tilt-card">
+                        <div class="card-visual-node">
+                            <img src="https://images.unsplash.com/photo-1527474305487-b87b222841cc?auto=format&fit=crop&w=600&q=80" alt="AI Core Detective" class="card-visual-img">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <h3 style="font-family:'Orbitron',sans-serif; letter-spacing:1px;" class="preserve-3d">AI Image Detective</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;" class="preserve-3d">
+                            Computer vision deployment client utilizing the COCO-SSD object recognition model. Performs safe matrix scanning directly in the browser layer.
+                        </p>
+                        <div style="display:flex; gap:8px; margin-bottom:20px;" class="preserve-3d">
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">TensorFlow.js</span>
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Neural Nets</span>
+                        </div>
+                        <a href="deepseek_html_20260509_0a28c6.html" download="deepseek_html_20260509_0a28c6.html" class="action-btn btn-glow-primary preserve-3d" style="padding:12px 20px; width:100%; justify-content:center;">
+                            <i class="fa-solid fa-download"></i> Download HTML Source
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Unit 3 -->
+                <div class="tilt-card-wrapper" data-aos="fade-down" data-aos-duration="1000">
+                    <div class="tilt-card">
+                        <div class="card-visual-node">
+                            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80" alt="Collage Studio Space" class="card-visual-img">
+                            <i class="fa-solid fa-images"></i>
+                        </div>
+                        <h3 style="font-family:'Orbitron',sans-serif; letter-spacing:1px;" class="preserve-3d">Photo Collage Studio</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;" class="preserve-3d">
+                            A browser layout rendering grid system. Supports user file array buffering, pixel gap calculation, and high-resolution canvas exporting logic.
+                        </p>
+                        <div style="display:flex; gap:8px; margin-bottom:20px;" class="preserve-3d">
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">HTML5 Canvas</span>
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Array Buffers</span>
+                        </div>
+                        <a href="deepseek_html_20260509_63dfa9.html" download="deepseek_html_20260509_63dfa9.html" class="action-btn btn-glow-primary preserve-3d" style="padding:12px 20px; width:100%; justify-content:center;">
+                            <i class="fa-solid fa-download"></i> Download HTML Source
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Unit 4 -->
+                <div class="tilt-card-wrapper" data-aos="slide-up" data-aos-duration="850">
+                    <div class="tilt-card">
+                        <div class="card-visual-node">
+                            <img src="https://images.unsplash.com/photo-1614149162883-504ce4d13909?auto=format&fit=crop&w=600&q=80" alt="Audio Stream Interface" class="card-visual-img">
+                            <i class="fa-solid fa-backward"></i>
+                        </div>
+                        <h3 style="font-family:'Orbitron',sans-serif; letter-spacing:1px;" class="preserve-3d">Audio Reverser Suite</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;" class="preserve-3d">
+                            High-fidelity audio stream manipulation software matrix. Decodes data channels directly into ArrayBuffers to read binary sequences in reverse.
+                        </p>
+                        <div style="display:flex; gap:8px; margin-bottom:20px;" class="preserve-3d">
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Web Audio API</span>
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Binary Processing</span>
+                        </div>
+                        <a href="deepseek_html_20260508_bdb3cc.html" download="deepseek_html_20260508_bdb3cc.html" class="action-btn btn-glow-primary preserve-3d" style="padding:12px 20px; width:100%; justify-content:center;">
+                            <i class="fa-solid fa-download"></i> Download HTML Source
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Unit 5 -->
+                <div class="tilt-card-wrapper" data-aos="fade-down" data-aos-duration="950">
+                    <div class="tilt-card">
+                        <div class="card-visual-node">
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" alt="Frequencies Equalizer Space" class="card-visual-img">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h3 style="font-family:'Orbitron',sans-serif; letter-spacing:1px;" class="preserve-3d">Vocal Style Transformer</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;" class="preserve-3d">
+                            Real-time manipulation application mapping node frequencies and altering voice spectrum arrays using customized algorithmic styles.
+                        </p>
+                        <div style="display:flex; gap:8px; margin-bottom:20px;" class="preserve-3d">
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Audio Graphs</span>
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">DSP Node</span>
+                        </div>
+                        <a href="deepseek_html_20260509_bf9dc0.html" download="deepseek_html_20260509_bf9dc0.html" class="action-btn btn-glow-primary preserve-3d" style="padding:12px 20px; width:100%; justify-content:center;">
+                            <i class="fa-solid fa-download"></i> Download HTML Source
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Unit 6 -->
+                <div class="tilt-card-wrapper" data-aos="zoom-out" data-aos-duration="1100">
+                    <div class="tilt-card">
+                        <div class="card-visual-node">
+                            <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=600&q=80" alt="Pixel Synthesis Engine" class="card-visual-img">
+                            <i class="fa-solid fa-circle-half-stroke"></i>
+                        </div>
+                        <h3 style="font-family:'Orbitron',sans-serif; letter-spacing:1px;" class="preserve-3d">Negative Image Processor</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;" class="preserve-3d">
+                            Algorithmic image inversion workspace. Inverts source pixel data arrays while scaling color contrast bounds automatically.
+                        </p>
+                        <div style="display:flex; gap:8px; margin-bottom:20px;" class="preserve-3d">
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Pixel Synthesis</span>
+                            <span class="exp-pill" style="font-size:0.7rem; padding:4px 10px;">Matrix Processing</span>
+                        </div>
+                        <a href="non negetive.html" download="non negetive.html" class="action-btn btn-glow-primary preserve-3d" style="padding:12px 20px; width:100%; justify-content:center;">
+                            <i class="fa-solid fa-download"></i> Download HTML Source
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Native Architecture Module -->
+    <section id="apps">
+        <div class="container">
+            <div class="section-header" data-aos="zoom-in-up" data-aos-duration="1000">
+                <h2>Mobile Native Hub</h2>
+                <p>// Compilation blueprints and deployment binaries for the Android environment</p>
+            </div>
+
+            <div class="tilt-card-wrapper" style="max-width: 850px; margin: 0 auto;" data-aos="flip-up" data-aos-duration="1200">
+                <div class="tilt-card">
+                    <div class="app-store-strip">
+                        <div class="app-vector-icon preserve-3d"><i class="fa-brands fa-android"></i></div>
+                        <div style="flex-grow:1;" class="preserve-3d">
+                            <h3 style="font-family:'Orbitron',sans-serif; font-size: 1.8rem; margin-bottom: 5px; letter-spacing:1px;">WhysApp Messaging Environment</h3>
+                            <div style="display:flex; gap:15px; color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">
+                                <span><i class="fa-solid fa-code-commit"></i> Architecture Blueprint v1.0</span>
+                                <span><i class="fa-solid fa-microchip"></i> ARM64 Build Suite</span>
+                            </div>
+                            <p style="color: var(--text-muted); font-size:0.95rem; max-width:600px;">
+                                A native mobile messaging architecture prototype. Constructed with dynamic state tracking interfaces, relational system parameters, and modern object configurations optimized for responsive execution.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 30px; display:flex; justify-content: flex-end;" class="preserve-3d">
+                        <a href="whysapp.apk" download="whysapp.apk" class="action-btn btn-glow-primary"><i class="fa-solid fa-download"></i> Compile & Download APK File</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connection Terminal Link -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header" data-aos="flip-down" data-aos-duration="1000">
+                <h2>Open Comms Link</h2>
+                <p>// Initialize handshake protocols to transfer code arrays or open project boards</p>
+            </div>
+
+            <div class="tilt-card-wrapper" style="max-width: 900px; margin: 0 auto;" data-aos="zoom-out-down" data-aos-duration="1100">
+                <div class="tilt-card" style="text-align: center; padding: 4rem 2rem;">
+                    <h3 style="font-size: 2.2rem; margin-bottom: 15px;" class="preserve-3d">Establish Connection Protocols</h3>
+                    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 40px;" class="preserve-3d">
+                        Have an implementation strategy, a structural project requirement, or codebase arrays to evaluate? Open a communication session directly via the fast-links below.
+                    </p>
+                    
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;" class="preserve-3d">
+                        <a href="mailto:v4412@gmail.com" class="action-btn btn-cyber-outline" style="border-color: #ea4335;"><i class="fa-solid fa-envelope" style="color: #ea4335;"></i> v4412@gmail.com</a>
+                        <a href="https://wa.me/917795317034" target="_blank" class="action-btn btn-cyber-outline" style="border-color: #25D366;"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Secure Handshake</a>
+                    </div>
+
+                    <div style="display:flex; justify-content:center;" class="preserve-3d">
+                        <div class="social-dock">
+                            <a href="https://www.instagram.com/vinay_.o6?igsh=MW1teHk2azVtaThsNg==" target="_blank" class="dock-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="https://github.com/vinayghl/" target="_blank" class="dock-link" title="GitHub System Storage"><i class="fa-brands fa-github"></i></a>
+                            <a href="https://twitter.com/Vinay756141" target="_blank" class="dock-link" title="X Channel"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="https://vinayworldpov.blogspot.com/" target="_blank" class="dock-link" title="Blog Database"><i class="fa-brands fa-blogger-b"></i></a>
+                            <a href="https://vinayworld.vercel.app" target="_blank" class="dock-link" title="Production Vercel Domain"><i class="fa-solid fa-network-wired"></i></a>
+                            <a href="https://vinaykw.netlify.app" target="_blank" class="dock-link" title="Production Netlify Deployment"><i class="fa-solid fa-globe"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outro Note -->
+            <div style="text-align: center; max-width: 700px; margin: 120px auto 0; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 40px;" data-aos="fade-up">
+                <h4 style="font-family:'Orbitron',sans-serif; color: var(--cyan); margin-bottom: 20px; letter-spacing:2px;">// SYSTEM TERMINATION SEQUENCE</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px;">
+                    Thank you for navigating this workspace interface. I hope this display layer successfully showcased what is achievable through persistent analysis, constant logical iteration, and focused creative software design.
+                </p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">
+                    Keep configuring. Keep developing. Keep improving. The modern internet requires creators. Be one of the few who architect systems.
+                </p>
+                <p style="color: rgba(255,255,255,0.15); font-size: 0.75rem; font-family: 'Orbitron',sans-serif; margin-top: 50px;">
+                    [ENV_LOG: 2026 // VINAY_R_WORKSPACE // ALL_SYSTEMS_OPERATIONAL]
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Dynamic Script Core Assembly -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <!-- Three.js CDN Implementation for 3D Background Systems -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // 1. Initializing Animation Foundations
+        AOS.init({ duration: 900, offset: 50, once: true, easing: 'ease-out-quad' });
+
+        // 2. Preloader Module
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 600);
+        });
+
+        // 3. Scroll Progress & Navigation Mapping
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+            
+            let current = '';
+            document.querySelectorAll('section').forEach(sec => {
+                if (window.scrollY >= (sec.offsetTop - 260)) { current = sec.getAttribute('id'); }
+            });
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) { link.classList.add('active'); }
+            });
+        });
+
+        // 4. Code Prompt Custom Cursor Triggers
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        
+        window.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            ring.style.left = e.clientX + 'px';
+            ring.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, button, .dock-link').forEach(elem => {
+            elem.addEventListener('mouseenter', () => {
+                dot.style.transform = 'translate(-50%, -50%) scale(1.25)';
+                dot.style.color = 'var(--secondary)';
+                dot.textContent = '{ }';
+                ring.style.width = '56px';
+                ring.style.height = '56px';
+                ring.style.borderColor = 'var(--secondary)';
+                ring.style.borderStyle = 'solid';
+            });
+            elem.addEventListener('mouseleave', () => {
+                dot.style.transform = 'translate(-50%, -50%) scale(1)';
+                dot.style.color = 'var(--cyan)';
+                dot.textContent = '</>';
+                ring.style.width = '44px';
+                ring.style.height = '44px';
+                ring.style.borderColor = 'rgba(0, 242, 254, 0.35)';
+                ring.style.borderStyle = 'dashed';
+            });
+        });
+
+        // 5. 3D Card Matrix Interactions
+        const wrappers = document.querySelectorAll('.tilt-card-wrapper');
+        wrappers.forEach(wrap => {
+            const card = wrap.querySelector('.tilt-card');
+            wrap.addEventListener('mousemove', (e) => {
+                const rect = wrap.getBoundingClientRect();
+                const x = e.clientX - rect.left - (rect.width/2);
+                const y = e.clientY - rect.top - (rect.height/2);
+                
+                const factorX = y / (rect.height / 2);
+                const factorY = -x / (rect.width / 2);
+                
+                card.style.transform = `rotateX(${factorX * 11}deg) rotateY(${factorY * 11}deg) translateY(-5px)`;
+            });
+            wrap.addEventListener('mouseleave', () => {
+                card.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0px)';
+            });
+        });
+
+        // 6. Typing Progression Cycle Logic
+        const roles = ["WEB APPLICATIONS", "3D ENVIRONMENTS", "JAVA / C++ ARCHITECTURES", "DIGITAL ASSETS"];
+        let count = 0, idx = 0, currentRole = '', chars = '', flag = false;
+
+        (function writeCycle() {
+            if (count === roles.length) count = 0;
+            currentRole = roles[count];
+            chars = flag ? currentRole.slice(0, --idx) : currentRole.slice(0, ++idx);
+            document.getElementById('profession-engine').textContent = chars;
+            
+            let pace = flag ? 40 : 90;
+            if (!flag && chars.length === currentRole.length) { pace = 1800; flag = true; }
+            else if (flag && chars.length === 0) { flag = false; count++; pace = 400; }
+            setTimeout(writeCycle, pace);
+        })();
+
+        // 7. Advanced Three.js Morphing Particle Core (Updated Matrix Design)
+        let scene, camera, renderer;
+        let starField, dynamicFluidSphere;
+        let originalSpherePositions;
+        const particleCount = 28000;
+
+        function initThreeUniverse() {
+            const container = document.getElementById('three-space-container');
+            
+            // Setup Core Scene Parameters
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x020206, 0.0012);
+
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 150;
+            camera.position.y = 15;
+
+            // WebGL Renderer Configurations
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Lighting Setup
+            const ambientLight = new THREE.AmbientLight(0x443377, 1.2);
+            scene.add(ambientLight);
+
+            const pointLightCentral = new THREE.PointLight(0x00f2fe, 3, 300);
+            pointLightCentral.position.set(60, 20, 20);
+            scene.add(pointLightCentral);
+
+            // Create Star Field Engine Layer
+            const starCount = 1200;
+            const starGeometry = new THREE.BufferGeometry();
+            const starPositions = new Float32Array(starCount * 3);
+            const starColors = new Float32Array(starCount * 3);
+
+            for(let i = 0; i < starCount * 3; i+=3) {
+                const radius = 350 + Math.random() * 250;
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
+                
+                starPositions[i] = radius * Math.sin(phi) * Math.cos(theta);
+                starPositions[i+1] = radius * Math.sin(phi) * Math.sin(theta);
+                starPositions[i+2] = radius * Math.cos(phi);
+
+                const randomChoice = Math.random();
+                if(randomChoice > 0.85) {
+                    starColors[i] = 0.0; starColors[i+1] = 0.95; starColors[i+2] = 1.0; // Cyan
+                } else if(randomChoice > 0.7) {
+                    starColors[i] = 1.0; starColors[i+1] = 0.16; starColors[i+2] = 0.52; // Pink
+                } else {
+                    starColors[i] = 0.8; starColors[i+1] = 0.8; starColors[i+2] = 1.0; // Soft Light
+                }
+            }
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+            starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+            
+            const starMaterial = new THREE.PointsMaterial({
+                size: 1.8,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.75,
+                sizeAttenuation: true
+            });
+            starField = new THREE.Points(starGeometry, starMaterial);
+            scene.add(starField);
+
+            // 8. Fluid Particle Sphere Assembly (Matching your video context loop)
+            const fluidGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            originalSpherePositions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            for(let i = 0; i < particleCount; i++) {
+                // Spherical Distribution Modeling
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
+                
+                // Base radius of the sphere with layer variance
+                const baseRadius = 38 + (Math.random() * 4);
+
+                const x = baseRadius * Math.sin(phi) * Math.cos(theta);
+                const y = baseRadius * Math.sin(phi) * Math.sin(theta);
+                const z = baseRadius * Math.cos(phi);
+
+                positions[i*3] = x;
+                positions[i*3+1] = y;
+                positions[i*3+2] = z;
+
+                originalSpherePositions[i*3] = x;
+                originalSpherePositions[i*3+1] = y;
+                originalSpherePositions[i*3+2] = z;
+
+                // Color Interpolation Mapping: Dense Pink/Purple to Cyan-Blue Spectrum Gradient
+                const verticalMix = (y + 42) / 84; 
+                const horizontalMix = (x + 42) / 84;
+                const combinedFactor = THREE.MathUtils.clamp((verticalMix + horizontalMix) / 2, 0, 1);
+
+                // Lerp colors between pink (#ff2a85) and bright cyan/blue (#00f2fe)
+                colors[i*3] = THREE.MathUtils.lerp(0.0, 1.0, combinedFactor);        // R
+                colors[i*3+1] = THREE.MathUtils.lerp(0.95, 0.16, combinedFactor);    // G
+                colors[i*3+2] = THREE.MathUtils.lerp(1.0, 0.52, combinedFactor);     // B
+            }
+
+            fluidGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            fluidGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const fluidMaterial = new THREE.PointsMaterial({
+                size: 1.4,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.85,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+
+            dynamicFluidSphere = new THREE.Points(fluidGeometry, fluidMaterial);
+            
+            if(window.innerWidth > 992) {
+                dynamicFluidSphere.position.set(50, 5, -10);
+            } else {
+                dynamicFluidSphere.position.set(0, 30, -35);
+            }
+            scene.add(dynamicFluidSphere);
+        }
+
+        // 9. Real-time Rendering Execution Loop (Organic Mathematical Distortion)
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.015;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.015;
+        });
+
+        function animateThreeUniverse() {
+            requestAnimationFrame(animateThreeUniverse);
+
+            starField.rotation.y += 0.0002;
+
+            if(dynamicFluidSphere) {
+                const time = Date.now() * 0.0012;
+                const posAttribute = dynamicFluidSphere.geometry.attributes.position;
+                
+                // Generic Swirling Distortion Multi-Waves Framework
+                for (let i = 0; i < particleCount; i++) {
+                    let x = originalSpherePositions[i*3];
+                    let y = originalSpherePositions[i*3+1];
+                    let z = originalSpherePositions[i*3+2];
+
+                    // Multi-frequency wave formula modeling fluid curls from the source video
+                    const waveComponent = Math.sin(x * 0.06 + time * 1.8) * 
+                                          Math.cos(y * 0.05 + time * 1.4) * 
+                                          Math.sin(z * 0.06 + time * 1.1);
+                    
+                    // Twist factor calculations around structural vertical Y axis bounds
+                    const structuralTwist = time * 0.3 + (y * 0.015);
+                    const rotationalX = x * Math.cos(structuralTwist) - z * Math.sin(structuralTwist);
+                    const rotationalZ = x * Math.sin(structuralTwist) + z * Math.cos(structuralTwist);
+
+                    // Re-apply modulated positions directly onto buffer matrix elements
+                    posAttribute.array[i*3] = rotationalX + (rotationalX * 0.18 * waveComponent);
+                    posAttribute.array[i*3+1] = y + (y * 0.18 * waveComponent);
+                    posAttribute.array[i*3+2] = rotationalZ + (rotationalZ * 0.18 * waveComponent);
+                }
+                
+                posAttribute.needsUpdate = true;
+                
+                // Passive base matrix rotations
+                dynamicFluidSphere.rotation.y += 0.0015;
+                dynamicFluidSphere.rotation.x += 0.0004;
+
+                // Parallax feedback calculations
+                const optimalX = (window.innerWidth > 992 ? 50 : 0) + mouseX;
+                const optimalY = (window.innerWidth > 992 ? 5 : 30) - mouseY;
+                dynamicFluidSphere.position.x += (optimalX - dynamicFluidSphere.position.x) * 0.05;
+                dynamicFluidSphere.position.y += (optimalY - dynamicFluidSphere.position.y) * 0.05;
+            }
+
+            // Smooth parallax shift for camera view tracking arrays
+            camera.position.x += (mouseX * 0.15 - camera.position.x) * 0.05;
+            camera.position.y += (15 - mouseY * 0.15 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        // 10. Window Resizing Adaptation Architecture
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            if(window.innerWidth > 992) {
+                dynamicFluidSphere.position.set(50, 5, -10);
+            } else {
+                dynamicFluidSphere.position.set(0, 30, -35);
+            }
+        });
+
+        // Triggering Graphics Matrix Initialization Setup
+        initThreeUniverse();
+        animateThreeUniverse();
+    </script>
+</body>
+</html>
